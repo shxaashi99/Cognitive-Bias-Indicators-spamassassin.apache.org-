@@ -211,18 +211,7 @@ For extending the work: Consider unifying the taxonomy and scoring logic across 
 6. Contact and Citation
 For questions about the artefact or the research, please contact:
 
-Ibrahim Abdullahi Sheikh
+Ibrahim Abdullahi Sheikh_25006888
 Email: Shxaashi99@gmail.com
-Institution: University of the West of England (UWE)
+Institution: University of the West of England (UWE Bristol)
 
-If you use this artefact in your own research, please cite the associated research write‑up:
-
-bibtex
-@mastersthesis{sheikh2025cognitive,
-  author       = {Sheikh, Ibrahim Abdullahi},
-  title        = {A Computational Framework for Identifying and Quantifying 
-                   Cognitive Bias Indicators in Phishing},
-  school       = {University of the West of England},
-  year         = {2025},
-  address      = {Bristol, United Kingdom}
-}
