@@ -69,7 +69,7 @@ Important limitation: This script does not load data from the process_emails.py 
 The extract_features() function applies the taxonomy patterns to each email body. For each of the four bias categories, it counts the number of matches found using regular expressions, and then sums these counts to calculate a Density metric, defined as the total number of bias indicators divided by the total word count, multiplied by 100. This Density feature is intended to capture the overall concentration of affective and manipulative language in the message.
 
 2.3.4 Model Training and Evaluation
-The script separates the feature columns – the four bias category counts plus the Density metric – from the target label column. It then splits the data into training and test sets using a 70/30 split (the default for train_test_split when test_size=0.3), trains a Random Forest classifier with 100 estimators, and evaluates the model using the classification report and ROC‑AUC score. The results are printed to the terminal.
+The script separates the feature columns – the four bias category counts plus the Density metric – from the target label column. It then splits the data into training and test sets using a 80/20 split (the default for train_test_split when test_size=0.3), trains a Random Forest classifier with 100 estimators, and evaluates the model using the classification report and ROC‑AUC score. The results are printed to the terminal.
 
 2.3.5 Visualisation Generation
 The script generates five PNG visualisation files, which are saved directly to the working directory:
