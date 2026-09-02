@@ -439,6 +439,15 @@ Given the limitations described above, users are advised to approach the artefac
 
 It is also important to note that the BPRSM framework is designed to complement, not replace, existing security measures. The conceptual formula and the validated Random Forest model serve different purposes: the Random Forest provides rigorous empirical validation of the features, while the conceptual formula offers a transparent, explainable scoring mechanism. The corrected dashboard bridges these two approaches by implementing the conceptual formula while referencing the validated model's metrics in its footer. Future work should focus on calibrating the conceptual formula's weights and synergy bonus against the Random Forest's feature importances, thereby creating a unified framework that is both empirically validated and transparently explainable.
 
-7. Contact and Citation
+7.  BPRSM Artefact Documentation – Summary
+This repository contains the implementation artefacts for the Bias‑Based Phishing Risk Scoring Model (BPRSM), developed as part of an MSc research project at UWE Bristol. The framework bridges psycholinguistic theory and automated phishing detection by identifying and quantifying cognitive bias indicators in email text.
+
+The core implementation consists of two Python scripts: process_emails.py for data ingestion from the SpamAssassin corpus, and comprehensive_analysis.py for feature extraction, Random Forest validation, and visualisation generation. The script implements a taxonomy of 31 keyword patterns across four bias categories (Authority, Urgency, Fear, Elicitation) with weights of 4, 5, 4, and 3 respectively, and a synergy bonus of 2.5 when Authority and Urgency co-occur. The validated model achieves an accuracy of 0.90 and a ROC‑AUC of 0.9365.
+
+Three HTML dashboards provide interactive demonstrations, with new risk_dashboard (corrected).html being the most accurate implementation of the conceptual BPRSM formula: Sfinal = Σ(hits × weight) + Wsynergy. The repository also includes visualisation outputs (confusion matrix, feature importance, trigger density, synergy matrices), sample test cases in Risk Mails.docx, and a dashboard_data.json file containing pre‑computed summary statistics.
+
+The BPRSM framework exists in two complementary forms: the conceptual weighted scoring formula for transparent, explainable scoring, and the validated Random Forest model for empirical confirmation of feature predictiveness. The dashboards are illustrative demonstrators rather than validated detection systems. For rigorous quantitative results, users should run comprehensive_analysis.py; for interactive exploration of the conceptual formula, use the corrected dashboard.
+
+8. Contact and Citation
 For questions about the artefact or the research, please contact Ibrahim Abdullahi Sheikh_25006888 at Shxaashi99@gmail.com. The research was conducted at the University of the West of England (UWE Bristol) as part of an MSc project.
 
