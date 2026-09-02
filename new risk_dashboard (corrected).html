@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bias-Based Phishing Risk Scoring Model (BPRSM)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .academic-gradient {
+            background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
+        }
+        .citation-tag {
+            font-size: 0.65rem;
+            background-color: #f1f5f9;
+            padding: 2px 8px;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            color: #475569;
+            font-weight: 600;
+        }
+        .score-gauge {
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .bprsm-badge {
+            font-size: 0.6rem;
+            background: rgba(255,255,255,0.1);
+            padding: 2px 10px;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        .threshold-indicator {
+            width: 100%;
+            height: 4px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 2px;
+            margin-top: 8px;
+            position: relative;
+        }
+        .threshold-marker {
+            position: absolute;
+            top: -6px;
+            width: 2px;
+            height: 16px;
+            background: #fbbf24;
+            border-radius: 1px;
+        }
+        .threshold-label {
+            font-size: 0.6rem;
+            color: rgba(255,255,255,0.6);
+            position: absolute;
+            top: 12px;
+            transform: translateX(-50%);
+        }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen font-sans text-slate-900 pb-20">
+
+    <header class="academic-gradient text-white py-14 px-8 mb-8 shadow-2xl relative overflow-hidden">
+        <div class="absolute inset-0 opacity-5 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]"></div>
+        <div class="max-w-6xl mx-auto relative z-10">
+            <div class="flex items-center gap-3 mb-3">
+                <h1 class="text-4xl md:text-5xl font-black tracking-tighter">Bias-Based Phishing Risk Scoring Model</h1>
+                <span class="bprsm-badge text-blue-300">BPRSM v1.0</span>
+            </div>
+            <p class="text-blue-200 text-lg max-w-3xl leading-relaxed font-light">
+                A computational framework integrating <strong>Cognitive-Affective-Behavioral (CAB)</strong> vectors to quantify human susceptibility to digital deception using the conceptual formula: 
+                <code class="bg-white/10 px-3 py-1 rounded text-sm font-mono">Sfinal = Σ(hits × weight) + Wsynergy</code>
+            </p>
+            <div class="mt-4 flex flex-wrap gap-2 text-xs text-blue-300">
+                <span class="bg-white/10 px-3 py-1 rounded-full">31 Indicators</span>
+                <span class="bg-white/10 px-3 py-1 rounded-full">4 Bias Categories</span>
+                <span class="bg-white/10 px-3 py-1 rounded-full">Weights: Authority=4, Urgency=5, Fear=4, Elicitation=3</span>
+                <span class="bg-white/10 px-3 py-1 rounded-full">Synergy Bonus: +2.5</span>
+                <span class="bg-white/10 px-3 py-1 rounded-full">Threshold: 15.0</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-12 gap-8">
+        
+        <!-- Input Section -->
+        <section class="lg:col-span-4 space-y-6">
+            <div class="bg-white p-6 rounded-3xl shadow-xl border border-slate-200">
+                <h3 class="text-xl font-bold mb-4 flex items-center gap-3 text-slate-800">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+                    </svg>
+                    Email Text Input
+                </h3>
+                <textarea id="emailInput" class="w-full h-72 p-4 text-sm bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-blue-100 focus:border-blue-500 outline-none transition-all shadow-inner font-mono" placeholder="Paste email content here for cognitive bias analysis..."></textarea>
+                <button onclick="analyzeRisk()" class="w-full mt-4 bg-blue-600 text-white font-bold py-4 rounded-2xl shadow-lg hover:bg-blue-700 active:scale-95 transition-all uppercase tracking-wider text-sm">
+                    <span id="btnText">Generate BPRSM Risk Profile</span>
+                </button>
+            </div>
+
+            <!-- Formula Reference -->
+            <div class="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm space-y-3">
+                <h4 class="font-bold text-slate-900 flex items-center gap-2 text-sm">
+                    <span class="w-2 h-2 bg-blue-600 rounded-full"></span>
+                    BPRSM Formula
+                </h4>
+                <div class="bg-slate-50 p-4 rounded-xl font-mono text-sm border border-slate-100">
+                    <div class="text-slate-700"><span class="font-bold text-blue-700">Sfinal</span> = <span class="text-amber-600">Σ</span>(<span class="text-emerald-600">hits</span> × <span class="text-purple-600">weight</span>) + <span class="text-red-500">Wsynergy</span></div>
+                    <div class="text-xs text-slate-500 mt-2 border-t border-slate-200 pt-2">
+                        <div>• Authority: <span class="font-bold text-purple-600">×4</span></div>
+                        <div>• Urgency: <span class="font-bold text-purple-600">×5</span></div>
+                        <div>• Fear: <span class="font-bold text-purple-600">×4</span></div>
+                        <div>• Elicitation: <span class="font-bold text-purple-600">×3</span></div>
+                        <div>• Wsynergy: <span class="font-bold text-red-500">+2.5</span> (if Authority <span class="text-amber-600">AND</span> Urgency &gt; 0)</div>
+                        <div>• Threshold: <span class="font-bold text-amber-600">15.0</span> (Critical Risk)</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Analysis Section -->
+        <section id="resultArea" class="lg:col-span-8 hidden space-y-6">
+            
+            <!-- Risk Score Card -->
+            <div id="scoreContainer" class="p-8 rounded-3xl text-white shadow-2xl transition-all duration-700 relative overflow-hidden bg-slate-700 border-2 border-slate-600">
+                <div class="absolute top-0 right-0 p-6 opacity-10">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-24 w-24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                    </svg>
+                </div>
+                <div class="relative z-10">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-blue-200 uppercase tracking-[0.2em] text-xs font-black mb-1">BPRSM Score</p>
+                            <div class="flex items-baseline gap-4">
+                                <h2 class="text-6xl md:text-7xl font-black tracking-tighter" id="riskScore">0</h2>
+                                <span class="text-xl font-light opacity-60">/ 30+</span>
+                            </div>
+                            <div class="threshold-indicator">
+                                <div class="threshold-marker" style="left: 50%;"></div>
+                                <span class="threshold-label" style="left: 50%;">Threshold 15.0</span>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <div id="threatLevel" class="text-sm font-bold tracking-wide px-4 py-1.5 bg-white/10 backdrop-blur-md rounded-full border border-white/20">—</div>
+                            <div id="synergyIndicator" class="text-xs text-blue-300 mt-2 hidden">⚡ Synergy Bonus Applied</div>
+                        </div>
+                    </div>
+                    <div class="mt-4 flex gap-4 text-xs text-blue-200/70">
+                        <span>Base Score: <span id="baseScoreDisplay" class="font-bold text-white">0</span></span>
+                        <span>|</span>
+                        <span>Synergy: <span id="synergyDisplay" class="font-bold text-white">+0</span></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bias Breakdown -->
+            <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-200">
+                <h3 class="text-lg font-bold mb-4 text-slate-800 border-b pb-3 flex justify-between items-center">
+                    Cognitive Bias Profile
+                    <span class="text-xs font-normal text-slate-400" id="profileTimestamp">Formula: Σ(hits × weight) + Wsynergy</span>
+                </h3>
+                <div id="linguisticDetails" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Dynamic -->
+                </div>
+            </div>
+
+            <!-- Forensic Narrative -->
+            <div class="bg-slate-900 p-8 rounded-3xl shadow-2xl border border-slate-800">
+                <h3 class="text-xl font-bold mb-4 text-white flex items-center gap-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    Forensic Narrative
+                </h3>
+                <div id="forensicNarrative" class="text-slate-300 leading-relaxed text-base space-y-4">
+                    <p class="text-slate-400 italic">Analyse an email to generate a forensic narrative based on the BPRSM formula.</p>
+                </div>
+                <div id="prescriptiveRec" class="mt-6"></div>
+                <div class="mt-4 pt-4 border-t border-slate-700 text-xs text-slate-500">
+                    <em>Note: This is the conceptual BPRSM score. The validated Random Forest model (Accuracy: 0.90, ROC-AUC: 0.9365) confirms the predictive power of the bias-based features.</em>
+                </div>
+            </div>
+
+        </section>
+    </main>
+
+<script>
+// ================================================================
+// BPRSM DASHBOARD — Conceptual Formula Implementation
+// Sfinal = Σ(hits × weight) + Wsynergy
+// Weights: Authority=4, Urgency=5, Fear=4, Elicitation=3
+// Wsynergy = 2.5 (if Authority AND Urgency > 0)
+// Threshold = 15.0
+// ================================================================
+
+// 1. TAXONOMY — 31 keyword indicators across 4 categories
+// Matches comprehensive_analysis.py and the writeup
+const TAXONOMY = {
+    'Authority': {
+        keywords: ['ceo', 'admin', 'official', 'director', 'management', 'department', 'security'],
+        weight: 4,
+        insight: "Institutional framing triggers a 'Belief' state that bypasses sender anomaly checks (Tiwari, 2025; Onwuegbuche et al., 2025).",
+        findings: "Authority cues are the second most important predictor of phishing intent (Feature Importance: 0.238).",
+        tags: ['Institutional Framing', 'Semantic Authority']
+    },
+    'Urgency': {
+        keywords: ['immediat', 'now', 'deadline', 'urgent', 'asap', 'expir', 'limit', 'quick'],
+        weight: 5,
+        insight: "Urgency cues induce 'Cognitive Narrowing,' filtering out peripheral details (Saka et al., 2024).",
+        findings: "Urgency co-occurs with threatening language in 78% of high-risk corpus samples.",
+        tags: ['Cognitive Narrowing', 'Temporal Stress']
+    },
+    'Fear': {
+        keywords: ['suspend', 'risk', 'unauthoriz', 'breach', 'lock', 'warn', 'legal', 'compromis'],
+        weight: 4,
+        insight: "Fear appeal exploits vulnerability through critical risk scenarios (Onwuegbuche et al., 2025).",
+        findings: "Fear indicators show lower individual importance (0.057) but amplify through synergy.",
+        tags: ['Threat Detection', 'Loss Aversion']
+    },
+    'Elicitation': {
+        keywords: ['click', 'login', 'updat', 'submit', 'download', 'confirm', 'verify', 'access'],
+        weight: 3,
+        insight: "Elicitation focuses on commitment through incremental compliance requests (Gallo et al., 2024).",
+        findings: "Elicitation is the third most important predictor of phishing intent (0.232).",
+        tags: ['Commitment', 'Incremental Compliance']
+    }
+};
+
+// BPRSM Constants
+const SYNERGY_BONUS = 2.5;
+const RISK_THRESHOLD = 15.0;
+
+// Category order for display
+const CATEGORY_ORDER = ['Authority', 'Urgency', 'Fear', 'Elicitation'];
+
+// ================================================================
+// 2. CORE BPRSM FUNCTIONS
+// ================================================================
+
+function countHits(text, category) {
+    const lower = text.toLowerCase();
+    let count = 0;
+    for (const kw of category.keywords) {
+        if (lower.includes(kw)) count++;
+    }
+    return count;
+}
+
+function computeBPRSMScore(text) {
+    const hits = {};
+    let baseScore = 0;
+    let totalHits = 0;
+    
+    // Count hits per category and compute weighted sum
+    for (const cat of CATEGORY_ORDER) {
+        const count = countHits(text, TAXONOMY[cat]);
+        hits[cat] = count;
+        totalHits += count;
+        baseScore += count * TAXONOMY[cat].weight;
+    }
+    
+    // Compute synergy bonus
+    let synergy = 0;
+    let synergyApplied = false;
+    if (hits['Authority'] > 0 && hits['Urgency'] > 0) {
+        synergy = SYNERGY_BONUS;
+        synergyApplied = true;
+    }
+    
+    const finalScore = baseScore + synergy;
+    
+    return {
+        hits: hits,
+        totalHits: totalHits,
+        baseScore: baseScore,
+        synergy: synergy,
+        synergyApplied: synergyApplied,
+        finalScore: finalScore,
+        riskLevel: getRiskLevel(finalScore)
+    };
+}
+
+function getRiskLevel(score) {
+    if (score >= RISK_THRESHOLD) return 'CRITICAL COGNITIVE RISK';
+    if (score >= 10) return 'MODERATE BIAS DETECTION';
+    return 'LOW BIAS RESIDUE';
+}
+
+function getRiskColor(score) {
+    if (score >= RISK_THRESHOLD) return 'bg-red-900 border-2 border-red-500/50';
+    if (score >= 10) return 'bg-amber-600 border-2 border-amber-400/50';
+    return 'bg-emerald-700 border-2 border-emerald-500/50';
+}
+
+// ================================================================
+// 3. UI RENDERING
+// ================================================================
+
+function renderResults(result) {
+    const resultArea = document.getElementById('resultArea');
+    const scoreDisplay = document.getElementById('riskScore');
+    const scoreContainer = document.getElementById('scoreContainer');
+    const threatLevel = document.getElementById('threatLevel');
+    const synergyIndicator = document.getElementById('synergyIndicator');
+    const baseScoreDisplay = document.getElementById('baseScoreDisplay');
+    const synergyDisplay = document.getElementById('synergyDisplay');
+    const linguisticDetails = document.getElementById('linguisticDetails');
+    const forensicNarrative = document.getElementById('forensicNarrative');
+    const prescriptiveRec = document.getElementById('prescriptiveRec');
+    
+    // Show results
+    resultArea.classList.remove('hidden');
+    
+    // Update score card
+    scoreDisplay.innerText = result.finalScore.toFixed(1);
+    baseScoreDisplay.innerText = result.baseScore.toFixed(1);
+    synergyDisplay.innerText = `+${result.synergy.toFixed(1)}`;
+    
+    const riskColor = getRiskColor(result.finalScore);
+    scoreContainer.className = `p-8 rounded-3xl text-white shadow-2xl transition-all duration-700 relative overflow-hidden ${riskColor}`;
+    
+    threatLevel.innerText = result.riskLevel;
+    
+    if (result.synergyApplied) {
+        synergyIndicator.classList.remove('hidden');
+        synergyIndicator.innerText = '⚡ Synergy Bonus Applied (+' + result.synergy.toFixed(1) + ')';
+    } else {
+        synergyIndicator.classList.add('hidden');
+    }
+    
+    // Build linguistic profile
+    let html = '';
+    let foundCats = CATEGORY_ORDER.filter(c => result.hits[c] > 0);
+    if (foundCats.length === 0) foundCats = ['No bias indicators detected'];
+    
+    for (const cat of CATEGORY_ORDER) {
+        const count = result.hits[cat];
+        const data = TAXONOMY[cat];
+        const weight = data.weight;
+        const contribution = count * weight;
+        
+        html += `
+            <div class="space-y-3 ${count === 0 ? 'opacity-50' : ''}">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl ${count > 0 ? 'bg-blue-100' : 'bg-slate-100'} flex items-center justify-center font-bold ${count > 0 ? 'text-blue-600' : 'text-slate-400'}">
+                        ${count}
+                    </div>
+                    <div class="flex-1">
+                        <h4 class="font-black text-slate-800 uppercase tracking-tight text-sm">${cat}</h4>
+                        <div class="flex items-center gap-2 text-xs">
+                            <span class="text-purple-600 font-bold">×${weight}</span>
+                            <span class="text-slate-400">|</span>
+                            <span class="${count > 0 ? 'text-emerald-600 font-bold' : 'text-slate-400'}">${contribution.toFixed(1)} pts</span>
+                        </div>
+                    </div>
+                </div>
+                ${count > 0 ? `
+                    <p class="text-xs text-slate-500 leading-relaxed">${data.insight}</p>
+                    <p class="text-xs font-bold text-blue-700 bg-blue-50 p-2 rounded-xl border border-blue-100">
+                        ${data.findings}
+                    </p>
+                    <div class="flex flex-wrap gap-1.5">
+                        ${data.tags.map(t => `<span class="citation-tag">${t}</span>`).join('')}
+                    </div>
+                ` : `
+                    <p class="text-xs text-slate-400 italic">No indicators detected in this category.</p>
+                `}
+            </div>
+        `;
+    }
+    linguisticDetails.innerHTML = html;
+    document.getElementById('profileTimestamp').innerHTML = 
+        `Score: ${result.finalScore.toFixed(1)} | Threshold: ${RISK_THRESHOLD} | Formula: Σ(hits × weight) + Wsynergy`;
+    
+    // Generate forensic narrative
+    let narrativeText = '';
+    if (foundCats.length > 0 && foundCats[0] !== 'No bias indicators detected') {
+        narrativeText += `<p>This assessment reveals a <strong>BPRSM score of ${result.finalScore.toFixed(1)}</strong>, indicating <strong>${result.riskLevel}</strong>.</p>`;
+        narrativeText += `<p>Detected triggers: <strong>${foundCats.join(', ')}</strong>. `;
+        
+        if (result.synergyApplied) {
+            narrativeText += `The co-occurrence of Authority and Urgency triggers the "Compliance Trap" (Wsynergy = ${SYNERGY_BONUS}), consistent with the hypothesis that layered biases induce cognitive narrowing (Yao et al., 2025).`;
+        } else if (result.finalScore >= 10) {
+            narrativeText += `Moderate bias indicators detected. Manual verification recommended.`;
+        } else {
+            narrativeText += `No significant synergistic triggers detected. The text appears to have baseline linguistic markers.`;
+        }
+        narrativeText += `</p>`;
+        narrativeText += `<p class="text-slate-400 text-sm mt-2"><em>Calculation: ${foundCats.map(c => `${c}: ${result.hits[c]}×${TAXONOMY[c].weight}=${result.hits[c]*TAXONOMY[c].weight}`).join(', ')}${result.synergyApplied ? ` + Synergy ${SYNERGY_BONUS}` : ''} = ${result.finalScore.toFixed(1)}</em></p>`;
+    } else {
+        narrativeText += `<p class="text-slate-400">No significant cognitive bias indicators detected. The text appears to have baseline linguistic markers.</p>`;
+    }
+    forensicNarrative.innerHTML = narrativeText;
+    
+    // Prescriptive recommendations
+    if (result.finalScore >= RISK_THRESHOLD) {
+        prescriptiveRec.innerHTML = `
+            <div class="bg-red-600/10 border border-red-500/30 p-5 rounded-2xl text-red-100 text-sm">
+                <h4 class="font-black mb-2 uppercase tracking-widest text-red-400">Immediate Action Required</h4>
+                <ul class="space-y-2">
+                    <li class="flex gap-2"><span>•</span> <span><strong>Diagnosis:</strong> High-risk cognitive manipulation detected (score exceeds threshold of ${RISK_THRESHOLD}).</span></li>
+                    <li class="flex gap-2"><span>•</span> <span><strong>Response:</strong> Flag for urgent manual review; notify security team immediately.</span></li>
+                    <li class="flex gap-2"><span>•</span> <span><strong>Training:</strong> Consider user awareness training for cognitive bias triggers.</span></li>
+                </ul>
+            </div>
+        `;
+    } else if (result.finalScore >= 10) {
+        prescriptiveRec.innerHTML = `
+            <div class="bg-amber-600/10 border border-amber-500/30 p-5 rounded-2xl text-amber-100 text-sm">
+                <h4 class="font-black mb-2 uppercase tracking-widest text-amber-400">Suggested Review</h4>
+                <ul class="space-y-2">
+                    <li class="flex gap-2"><span>•</span> <span>Moderate bias indicators detected (score ${result.finalScore.toFixed(1)}).</span></li>
+                    <li class="flex gap-2"><span>•</span> <span>Manual verification recommended before taking action.</span></li>
+                </ul>
+            </div>
+        `;
+    } else {
+        prescriptiveRec.innerHTML = `
+            <div class="bg-slate-700 p-5 rounded-2xl text-slate-400 text-sm italic">
+                Low bias residue detected (score ${result.finalScore.toFixed(1)}). Routine monitoring sufficient.
+            </div>
+        `;
+    }
+}
+
+// ================================================================
+// 4. MAIN ANALYSIS FUNCTION
+// ================================================================
+
+function analyzeRisk() {
+    const text = document.getElementById('emailInput').value;
+    if (!text.trim()) {
+        alert('Please paste some email text to analyse.');
+        return;
+    }
+    
+    // Show loading state
+    const btn = document.getElementById('btnText');
+    btn.textContent = 'Analysing...';
+    
+    // Use setTimeout to allow UI to update
+    setTimeout(() => {
+        const result = computeBPRSMScore(text);
+        renderResults(result);
+        btn.textContent = 'Generate BPRSM Risk Profile';
+        
+        // Scroll to results
+        document.getElementById('resultArea').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 100);
+}
+
+// ================================================================
+// 5. SAMPLE DATA — Pre-load with a test case
+// ================================================================
+
+// Optional: Load a sample email on page load for demonstration
+window.addEventListener('DOMContentLoaded', function() {
+    const sampleEmail = `Subject: URGENT: Mandatory Security Update for Employees
+
+Dear Employee,
+
+By order of the CEO and the IT Directorate, all staff members must perform a mandatory account verification immediately. Due to an increase in unauthorized access attempts, failure to update your credentials within the next 2 hours will result in your corporate account being permanently locked.
+
+Please log in to the secure portal at: https://malicious-link.com
+
+Thank you, Corporate Administration`;
+
+    document.getElementById('emailInput').value = sampleEmail;
+    
+    // Auto-analyse on load for demonstration
+    setTimeout(() => {
+        analyzeRisk();
+    }, 500);
+});
+
+console.log('BPRSM Dashboard loaded.');
+console.log('Formula: Sfinal = Σ(hits × weight) + Wsynergy');
+console.log('Weights: Authority=4, Urgency=5, Fear=4, Elicitation=3');
+console.log('Synergy Bonus: +2.5 (Authority AND Urgency > 0)');
+console.log('Threshold: 15.0');
+</script>
+</body>
+</html>
