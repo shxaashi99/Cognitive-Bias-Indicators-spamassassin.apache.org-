@@ -283,7 +283,91 @@ This is the updated and more visually polished version of the dashboard. It defi
 
 2.4.3 new risk_dashboard1.html
 This enhanced dashboard loads dashboard_data.json to display model statistics (total emails, accuracy, ROC‑AUC, class split), feature importance bars, and sample emails with their conceptual BPRSM scores. It integrates the validated model's results with the interactive analysis capability, providing users with both pre‑computed results and the ability to analyse new email text.
+2.4.3 new risk_dashboard (corrected).html
+This is the primary and most accurate dashboard implementation, directly aligning with the research paper's BPRSM conceptual formula. It implements the exact taxonomy, weights, synergy logic, and threshold defined in the comprehensive_analysis.py script and described in the research write-up.
 
+Key Features:
+
+Exact Taxonomy Match: Uses the same 31 keyword indicators across four categories (Authority, Urgency, Fear, Elicitation) as defined in the research.
+
+Correct BPRSM Formula: Implements Sfinal = Σ(hits × weight) + Wsynergy with weights: Authority=4, Urgency=5, Fear=4, Elicitation=3, and Synergy Bonus=2.5.
+
+Accurate Threshold: Displays the 15.0 threshold for "Critical Cognitive Risk" with a visual indicator.
+
+Comprehensive Profile: Shows hit counts, weighted contributions, research insights, findings, and tags for each detected bias category.
+
+Forensic Narrative: Generates an explanatory narrative that synthesises detected triggers into a coherent psychological profile.
+
+Prescriptive Recommendations: Provides actionable recommendations based on the calculated risk level.
+
+Validated Model Reference: Displays the Random Forest validation metrics (Accuracy: 0.90, ROC-AUC: 0.9365) in the footer, linking the conceptual dashboard to the empirical validation.
+
+Code Listing – Core BPRSM Implementation in the Corrected Dashboard:
+
+javascript
+// TAXONOMY — 31 keyword indicators across 4 categories
+// Matches comprehensive_analysis.py and the writeup
+const TAXONOMY = {
+    'Authority': {
+        keywords: ['ceo', 'admin', 'official', 'director', 'management', 'department', 'security'],
+        weight: 4,
+        insight: "Institutional framing triggers a 'Belief' state that bypasses sender anomaly checks (Tiwari, 2025; Onwuegbuche et al., 2025).",
+        findings: "Authority cues are the second most important predictor of phishing intent (Feature Importance: 0.238).",
+        tags: ['Institutional Framing', 'Semantic Authority']
+    },
+    'Urgency': {
+        keywords: ['immediat', 'now', 'deadline', 'urgent', 'asap', 'expir', 'limit', 'quick'],
+        weight: 5,
+        insight: "Urgency cues induce 'Cognitive Narrowing,' filtering out peripheral details (Saka et al., 2024).",
+        findings: "Urgency co-occurs with threatening language in 78% of high-risk corpus samples.",
+        tags: ['Cognitive Narrowing', 'Temporal Stress']
+    },
+    'Fear': {
+        keywords: ['suspend', 'risk', 'unauthoriz', 'breach', 'lock', 'warn', 'legal', 'compromis'],
+        weight: 4,
+        insight: "Fear appeal exploits vulnerability through critical risk scenarios (Onwuegbuche et al., 2025).",
+        findings: "Fear indicators show lower individual importance (0.057) but amplify through synergy.",
+        tags: ['Threat Detection', 'Loss Aversion']
+    },
+    'Elicitation': {
+        keywords: ['click', 'login', 'updat', 'submit', 'download', 'confirm', 'verify', 'access'],
+        weight: 3,
+        insight: "Elicitation focuses on commitment through incremental compliance requests (Gallo et al., 2024).",
+        findings: "Elicitation is the third most important predictor of phishing intent (0.232).",
+        tags: ['Commitment', 'Incremental Compliance']
+    }
+};
+
+// BPRSM Constants
+const SYNERGY_BONUS = 2.5;
+const RISK_THRESHOLD = 15.0;
+
+function computeBPRSMScore(text) {
+    const hits = {};
+    let baseScore = 0;
+    
+    // Count hits per category and compute weighted sum
+    for (const cat of CATEGORY_ORDER) {
+        const count = countHits(text, TAXONOMY[cat]);
+        hits[cat] = count;
+        baseScore += count * TAXONOMY[cat].weight;
+    }
+    
+    // Compute synergy bonus (Authority AND Urgency)
+    let synergy = 0;
+    if (hits['Authority'] > 0 && hits['Urgency'] > 0) {
+        synergy = SYNERGY_BONUS;
+    }
+    
+    return {
+        hits: hits,
+        baseScore: baseScore,
+        synergy: synergy,
+        finalScore: baseScore + synergy,
+        riskLevel: getRiskLevel(baseScore + synergy)
+    };
+}
+The dashboard includes a pre-loaded sample email that demonstrates the "Authority + Urgency Co-occurrence" scenario, allowing users to immediately see how the BPRSM formula works in practice. The sample email contains language such as "URGENT," "Mandatory," "CEO," "IT Directorate," and "immediately," which triggers both Authority and Urgency indicators, resulting in the synergy bonus being applied.
 2.5 Visualisation Output Files
 The five PNG files – confusion_matrix.png, feature_importance.png, trigger_density.png, synergy_matrix.png, and synergy_co_occurrence.png – are generated by comprehensive_analysis.py and provide a visual summary of the model's performance and the relationships between bias indicators. These images are intended for inclusion in the research write‑up and for use in presentations. They are not used by any other component of the artefact.
 
