@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Cognitive Phishing Risk Engine (v2.0)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-50 p-6 md:p-12 font-sans text-slate-800">
+    <div class="max-w-5xl mx-auto bg-white p-8 rounded-2xl shadow-2xl border border-slate-100">
+        <header class="mb-8">
+            <h1 class="text-3xl font-extrabold text-slate-900">Bias-Based Phishing Risk Engine</h1>
+            <p class="text-slate-500 mt-2">Integrating psychological co-occurrence models [Onwuegbuche et al., 2025] and Cialdini-based taxonomy [Tooher & Lallie, 2025].</p>
+        </header>
+
+        <textarea id="emailInput" class="w-full h-48 p-5 border-2 border-slate-200 rounded-xl focus:ring-4 focus:ring-blue-100 outline-none transition" placeholder="Paste email content here to evaluate against cognitive threat frameworks..."></textarea>
+        
+        <button onclick="analyzeRisk()" class="mt-4 w-full bg-slate-900 text-white py-4 rounded-xl font-bold hover:bg-blue-700 transition transform active:scale-95">
+            Execute Multi-Layered Cognitive Analysis
+        </button>
+
+        <div id="results" class="mt-10 hidden grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="bg-slate-100 p-6 rounded-2xl">
+                <h2 class="text-lg font-bold mb-4 uppercase tracking-wider text-slate-500">Risk Severity</h2>
+                <div id="riskGauge" class="text-6xl font-black mb-4 tracking-tight">0%</div>
+                <ul id="analysisPoints" class="space-y-3"></ul>
+            </div>
+            <div class="bg-blue-50 p-6 rounded-2xl border border-blue-100">
+                <h2 class="text-lg font-bold mb-4 text-blue-900 uppercase tracking-wider">Methodological Citations</h2>
+                <div id="citations" class="text-sm text-slate-700 space-y-4 leading-relaxed"></div>
+            </div>
+        </div>
+    </div>
+
+<script>
+function analyzeRisk() {
+    const text = document.getElementById('emailInput').value.toLowerCase();
+    
+    // Taxonomy defined by research (Yao et al., Dalmiere et al., Tooher & Lallie)
+    const framework = {
+        'Authority': { keys: ['ceo', 'admin', 'director', 'official', 'management'], ref: 'Khadka et al. (2026); Rosyidah (2025)' },
+        'Urgency': { keys: ['immediately', 'now', 'deadline', 'urgent', 'asap', 'expire'], ref: 'Bukhsh et al. (2025); Onwuegbuche et al. (2025)' },
+        'Fear': { keys: ['suspended', 'risk', 'breach', 'warning', 'locked', 'unauthorized'], ref: 'Ma et al. (2025); Saka et al. (2024)' },
+        'Elicitation': { keys: ['login', 'verify', 'click', 'submit', 'confirm'], ref: 'Tooher & Lallie (2025); Gallo et al. (2024)' }
+    };
+
+    let counts = {};
+    let detected = [];
+    let score = 0;
+
+    for (let cat in framework) {
+        counts[cat] = framework[cat].keys.reduce((acc, w) => acc + (text.split(w).length - 1), 0);
+        if(counts[cat] > 0) {
+            detected.push(cat);
+            score += (counts[cat] * 25);
+        }
+    }
+
+    // Synergy calculation [Onwuegbuche et al., 2025] - Co-occurrence boosts risk
+    if(detected.length >= 2) score *= 1.4; 
+    if(detected.includes('Authority') && detected.includes('Urgency')) score *= 1.2;
+
+    const finalScore = Math.min(100, Math.round(score));
+    
+    document.getElementById('results').classList.remove('hidden');
+    document.getElementById('riskGauge').innerText = finalScore + "%";
+    document.getElementById('riskGauge').className = finalScore > 70 ? "text-6xl font-black mb-4 text-red-600" : "text-6xl font-black mb-4 text-amber-600";
+    
+    document.getElementById('analysisPoints').innerHTML = detected.map(cat => 
+        `<li class="flex items-center gap-2"><span>🛡️</span> <strong>${cat}:</strong> ${counts[cat]} markers detected.</li>`).join('');
+    
+    document.getElementById('citations').innerHTML = detected.map(cat => 
+        `<p class="border-b border-blue-200 pb-2"><strong>${cat} Bias:</strong> Validated by ${framework[cat].ref}. Exploits human decision-making heuristics to bypass security filters [Nicomette & Marchand, 2025].</p>`).join('');
+}
+</script>
+</body>
+</html>
