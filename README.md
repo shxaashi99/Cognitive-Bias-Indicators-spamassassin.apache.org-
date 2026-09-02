@@ -1,7 +1,7 @@
 Bias-Based Phishing Risk Scoring Model (BPRSM) – Artefact Documentation
-Author: Ibrahim Abdullahi Sheikh
+Author: Ibrahim Abdullahi Sheikh_25006888
 Institution: University of the West of England (UWE)
-Programme: Masters Project
+Programme: MSc Project
 Email: Shxaashi99@gmail.com
 
 1. Overview and Purpose
