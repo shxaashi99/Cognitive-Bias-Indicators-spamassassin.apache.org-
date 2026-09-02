@@ -439,19 +439,6 @@ Given the limitations described above, users are advised to approach the artefac
 
 It is also important to note that the BPRSM framework is designed to complement, not replace, existing security measures. The conceptual formula and the validated Random Forest model serve different purposes: the Random Forest provides rigorous empirical validation of the features, while the conceptual formula offers a transparent, explainable scoring mechanism. The corrected dashboard bridges these two approaches by implementing the conceptual formula while referencing the validated model's metrics in its footer. Future work should focus on calibrating the conceptual formula's weights and synergy bonus against the Random Forest's feature importances, thereby creating a unified framework that is both empirically validated and transparently explainable.
 
-7. Corrections Summary
-All identified issues from previous reviews have been fully resolved in this artefact documentation and associated code:
-
-ROC-AUC Value: The comprehensive_analysis.py script now explicitly sets roc_auc: 0.9365 in dashboard_data.json, matching the research paper. All documentation consistently uses 0.9365.
-
-Dashboard Implementation: The corrected dashboard (new risk_dashboard (corrected).html) now implements the exact BPRSM formula with the correct weights, synergy bonus, and threshold, ensuring alignment with the research paper.
-
-Taxonomy Consistency: The corrected dashboard uses the exact same 31 keyword indicators across 4 categories as defined in comprehensive_analysis.py, ensuring consistency between the validation script and the interactive demonstrator.
-
-Documentation Clarity: All sections now clearly distinguish between the conceptual BPRSM formula and the validated Random Forest model, explaining their complementary roles and how each component should be used.
-
-Code Listings: All code listings have been updated to reflect the corrected ROC-AUC value and the complete taxonomy, providing accurate, runnable examples for users.
-
-8. Contact and Citation
+7. Contact and Citation
 For questions about the artefact or the research, please contact Ibrahim Abdullahi Sheikh_25006888 at Shxaashi99@gmail.com. The research was conducted at the University of the West of England (UWE Bristol) as part of an MSc project.
 
