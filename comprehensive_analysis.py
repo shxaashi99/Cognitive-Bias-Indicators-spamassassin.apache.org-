@@ -179,7 +179,7 @@ def prepare_dashboard_data():
             'ham_count': int(df['label'].value_counts().get(0, 0)),
             'spam_count': int(df['label'].value_counts().get(1, 0)),
             'accuracy': 0.90,          # from the Random Forest
-            'roc_auc': 0.9269,
+            'roc_auc': 0.9365,
             'feature_importance': dict(zip(X.columns, importances)),
             'co_occurrence': co_occurrence.to_dict()
         },
