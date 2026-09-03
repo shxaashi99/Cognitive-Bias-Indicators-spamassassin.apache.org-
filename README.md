@@ -32,7 +32,7 @@ Each email is scored against a 31-keyword taxonomy spanning four psychological b
 
 From these hit-counts, two complementary scoring mechanisms are produced:
 
-1. **Random Forest classifier** (100 trees, 80/20 stratified train/test split) trained on the four category counts plus an overall **Trigger Density** metric (`total hits ÷ word count × 100`). This is the model actually validated against ham/spam labels — precision, recall, F1, and ROC-AUC are reported at runtime.
+1. **Random Forest classifier** (100 trees, 80/20 stratified train/test split) trained on the four category counts plus an overall **Trigger Density** metric (`total hits ÷ word count × 100`). This is the model actually validated against ham/spam labels precision, recall, F1, and ROC-AUC are reported at runtime.
 2. **BPRSM heuristic score**, a transparent, human-readable formula used to drive the dashboard's per-email risk narrative:
 
    ```
