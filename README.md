@@ -162,7 +162,7 @@ All of the following live in `comprehensive_analysis.py`:
 - **Corpus age** the SpamAssassin corpus spans 2002–2005 and reflects phishing tactics from that era; it does not capture more recent techniques (spear-phishing, QR-code lures, AI-generated pretexting, etc.).
 - **Keyword-based feature extraction** =the taxonomy relies on simple regex stem matching over lowercased text, which will miss obfuscated, paraphrased, or non-English triggers.
 - **`process_emails.py` and `comprehensive_analysis.py` are independent**  the main pipeline does not read a pickled DataFrame from `process_emails.py`; it re-implements its own loading/parsing. Run `comprehensive_analysis.py` on its own.
-- **Dashboard summary stats are partly illustrative** `dashboard_data.json`'s `accuracy` (0.90) and `roc_auc` (0.9365) fields are fixed values written by `prepare_dashboard_data()`, rather than the freshly computed metrics printed to the terminal on each run. Treat the terminal output as the authoritative result for a given run.
+- **Dashboard summary statistics are partly illustrative** `dashboard_data.json`'s `accuracy` (0.90) and `roc_auc` (0.9365) fields are fixed values written by `prepare_dashboard_data()`, rather than the freshly computed metrics printed to the terminal on each run. Treat the terminal output as the authoritative result for a given run.
 - **BPRSM formula is a demonstration layer** =the weighted-sum score exists for explainability in the dashboard; model *validation* (precision/recall/ROC-AUC) is performed by the Random Forest classifier, not the formula itself.
 
 For full methodology, related work, and discussion of these limitations, see `Risk Mails.docx`.
